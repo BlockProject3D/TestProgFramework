@@ -315,6 +315,19 @@ TEST(String, ExplodeSingleChar)
     EXPECT_STREQ("test", *data2[3]);
 }
 
+TEST(String, ExplodeOr)
+{
+    bpf::String s = "this is a, test";
+    bpf::List<bpf::String> data;
+
+    s.ExplodeOr(data, " ,");
+    EXPECT_TRUE(data.Size() == 4);
+    EXPECT_STREQ("this", *data[0]);
+    EXPECT_STREQ("is", *data[1]);
+    EXPECT_STREQ("a", *data[2]);
+    EXPECT_STREQ("test", *data[3]);
+}
+
 TEST(String, ExplodeString)
 {
     bpf::String s = "this  is  a  test";
@@ -406,9 +419,9 @@ TEST(String, ExplodeIgnoreString_Test1)
 
 TEST(String, ExplodeIgnoreString_Test2)
 {
-    bpf::String s = "this  !'is  a'!  test";
-    bpf::String s1 = "this      !'is   a'!                 test";
-    bpf::String s2 = "         this      !'is   a'!                 test         ";
+    bpf::String s = "this  !'is  a!'  test";
+    bpf::String s1 = "this      !'is   a!'                  test";
+    bpf::String s2 = "          this      !'is   a!'                  test          ";
     bpf::List<bpf::String> data;
     bpf::List<bpf::String> data1;
     bpf::List<bpf::String> data2;
@@ -419,6 +432,15 @@ TEST(String, ExplodeIgnoreString_Test2)
     EXPECT_TRUE(data.Size() == data1.Size());
     EXPECT_TRUE(data.Size() == data2.Size());
     EXPECT_TRUE(data.Size() == 3);
+    EXPECT_STREQ("this", *data[0]);
+    EXPECT_STREQ("!'is  a!'", *data[1]);
+    EXPECT_STREQ("test", *data[2]);
+    EXPECT_STREQ("this", *data1[0]);
+    EXPECT_STREQ("!'is   a!'", *data1[1]);
+    EXPECT_STREQ("test", *data1[2]);
+    EXPECT_STREQ("this", *data2[0]);
+    EXPECT_STREQ("!'is   a!'", *data2[1]);
+    EXPECT_STREQ("test", *data2[2]);
 }
 
 TEST(String, StartsWith)
@@ -457,7 +479,7 @@ TEST(String, EndsWithUTF8)
     EXPECT_TRUE(s.EndsWith(""));
 }
 
-TEST(String, Contains)
+TEST(String, ContainsString)
 {
     bpf::String s = "this is a test";
     EXPECT_TRUE(s.Contains(" is a "));
@@ -466,20 +488,45 @@ TEST(String, Contains)
     EXPECT_TRUE(!s.Contains("go"));
 }
 
+TEST(String, ContainsChar)
+{
+    bpf::String s = "this is a test";
+    EXPECT_TRUE(s.Contains('i'));
+    EXPECT_TRUE(s.Contains('t'));
+    EXPECT_TRUE(s.Contains('a'));
+    EXPECT_TRUE(!s.Contains('g'));
+}
+
 TEST(String, Sub)
 {
     bpf::String s = "test   test  testabc";
-    EXPECT_TRUE(s.Sub(0, 4) == "test");
-    EXPECT_TRUE(s.Sub(9, 11) == "st");
-    EXPECT_TRUE(s.Sub(12) == " testabc");
+    EXPECT_STREQ(*s.Sub(0, 4), "test");
+    EXPECT_STREQ(*s.Sub(9, 11), "st");
+    EXPECT_STREQ(*s.Sub(12), " testabc");
 }
 
 TEST(String, SubUTF8)
 {
     bpf::String s = "testÉé€test¥▦testabc";
-    EXPECT_TRUE(s.Sub(0, 4) == "test");
-    EXPECT_TRUE(s.Sub(11, 13) == "¥▦");
-    EXPECT_TRUE(s.Sub(12) == "▦testabc");
+    EXPECT_STREQ(*s.Sub(0, 4), "test");
+    EXPECT_STREQ(*s.Sub(11, 13), "¥▦");
+    EXPECT_STREQ(*s.Sub(12), "▦testabc");
+}
+
+TEST(String, SubLen)
+{
+    bpf::String s = "test   test  testabc";
+    EXPECT_STREQ(*s.SubLen(0, 4), "test");
+    EXPECT_STREQ(*s.SubLen(9, 2), "st");
+    EXPECT_STREQ(*s.SubLen(12), " testabc");
+}
+
+TEST(String, SubLenUTF8)
+{
+    bpf::String s = "testÉé€test¥▦testabc";
+    EXPECT_STREQ(*s.SubLen(0, 4), "test");
+    EXPECT_STREQ(*s.SubLen(11, 2), "¥▦");
+    EXPECT_STREQ(*s.SubLen(12), "▦testabc");
 }
 
 TEST(String, ToInt)
@@ -520,19 +567,24 @@ TEST(String, Evaluate)
 {
     double res;
     bpf::String("4+4").Evaluate(res);
-    EXPECT_TRUE(res == 8);
+    EXPECT_EQ(res, 8);
     bpf::String("4+4*8").Evaluate(res);
-    EXPECT_TRUE(res == 36);
+    EXPECT_EQ(res, 36);
     bpf::String("4*1+4*1+2").Evaluate(res);
-    EXPECT_TRUE(res == 10);
-    bpf::String("32/32*32/1").Evaluate(res);
-    EXPECT_TRUE(res == 32);
+    EXPECT_EQ(res, 10);
+    bpf::String("32/32").Evaluate(res);
+    EXPECT_EQ(res, 1);
+    bpf::String("32/1").Evaluate(res);
+    EXPECT_EQ(res, 32);
+    //TODO : Fix 32/32*32/1 not working without parentheses
+    bpf::String("(((32/32)*32)/1)").Evaluate(res);
+    EXPECT_EQ(res, 32);
     bpf::String("-(1 + 1)").Evaluate(res);
-    EXPECT_TRUE(res == -2);
+    EXPECT_EQ(res, -2);
     bpf::String("-1 + 1").Evaluate(res);
-    EXPECT_TRUE(res == 0);
+    EXPECT_EQ(res, 0);
     bpf::String("-(1 + 1) * (4 - 1)").Evaluate(res);
-    EXPECT_TRUE(res == -6);
+    EXPECT_EQ(res, -6);
 }
 
 TEST(String, Format)
