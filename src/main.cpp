@@ -1,7 +1,8 @@
 ﻿#include <cassert>
 #include <iostream>
 #include <gtest/gtest.h>
-#include <Framework/Framework.hpp>
+#include <Framework/String.hpp>
+#include <Framework/Array.hpp>
 #include <Framework/EvalException.hpp>
 
 /*int main()
@@ -659,12 +660,12 @@ TEST(String, Iterate)
 {
     bpf::String str = "this is a test";
 
-    for (uint32 i = 0; i != str.Len(); ++i)
+    for (bpf::uint32 i = 0; i != str.Len(); ++i)
     {
         std::cout << str[i];
     }
     std::cout << std::endl;
-    for (uint32 i = 0; str[i]; ++i)
+    for (bpf::uint32 i = 0; str[i]; ++i)
     {
         std::cout << str[i];
     }
@@ -676,12 +677,12 @@ TEST(String, IterateUTF8)
     bpf::String str = "thïs ïs à tést€ducultdbdc";
     bpf::String str1;
 
-    for (uint32 i = 0; i != str.Len(); ++i)
+    for (bpf::uint32 i = 0; i != str.Len(); ++i)
     {
         std::cout << str[i];
     }
     std::cout << std::endl;
-    for (uint32 i = 0; str[i]; ++i)
+    for (bpf::uint32 i = 0; str[i]; ++i)
     {
         std::cout << str[i];
     }
