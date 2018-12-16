@@ -2,6 +2,7 @@
 #include <iostream>
 #include <gtest/gtest.h>
 #include <Framework/Framework.hpp>
+#include <Framework/EvalException.hpp>
 
 /*int main()
 {
@@ -566,25 +567,40 @@ TEST(String, ToDouble)
 TEST(String, Evaluate)
 {
     double res;
-    bpf::String("4+4").Evaluate(res);
+    res = bpf::String("4+4").Evaluate();
     EXPECT_EQ(res, 8);
-    bpf::String("4+4*8").Evaluate(res);
+    res = bpf::String("4+4*8").Evaluate();
     EXPECT_EQ(res, 36);
-    bpf::String("4*1+4*1+2").Evaluate(res);
+    res = bpf::String("4*1+4*1+2").Evaluate();
     EXPECT_EQ(res, 10);
-    bpf::String("32/32").Evaluate(res);
+    res = bpf::String("32/32").Evaluate();
     EXPECT_EQ(res, 1);
-    bpf::String("32/1").Evaluate(res);
+    res = bpf::String("32/1").Evaluate();
     EXPECT_EQ(res, 32);
     //TODO : Fix 32/32*32/1 not working without parentheses
-    bpf::String("(((32/32)*32)/1)").Evaluate(res);
+    res = bpf::String("(((32/32)*32)/1)").Evaluate();
     EXPECT_EQ(res, 32);
-    bpf::String("-(1 + 1)").Evaluate(res);
+    res = bpf::String("-(1 + 1)").Evaluate();
     EXPECT_EQ(res, -2);
-    bpf::String("-1 + 1").Evaluate(res);
+    res = bpf::String("-1 + 1").Evaluate();
     EXPECT_EQ(res, 0);
-    bpf::String("-(1 + 1) * (4 - 1)").Evaluate(res);
+    res = bpf::String("-(1 + 1) * (4 - 1)").Evaluate();
     EXPECT_EQ(res, -6);
+}
+
+TEST(String, EvaluateErr)
+{
+    double res;
+    try
+    {
+        res = bpf::String(" 0 / 0 ").Evaluate();
+    }
+    catch (const bpf::EvalException &)
+    {
+        ASSERT_TRUE(true);
+        return;
+    }
+    ASSERT_TRUE(false);
 }
 
 TEST(String, Format)
