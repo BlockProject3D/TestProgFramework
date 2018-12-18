@@ -29,6 +29,8 @@ include_directories("${gtest_SOURCE_DIR}/include")
 
 set(SOURCES
     src/main.cpp
+	src/String.cpp
+	src/File.cpp
 )
 
 bp_setup()
