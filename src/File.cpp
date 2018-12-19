@@ -10,6 +10,7 @@ TEST(File, Basics)
     EXPECT_FALSE(f.Exists());
     f.CreateDir();
     EXPECT_TRUE(f.Exists());
+    EXPECT_TRUE(f.IsDirectory());
     f.Delete();
     EXPECT_FALSE(f.Exists());
 }
@@ -21,9 +22,11 @@ TEST(File, Abs)
     EXPECT_FALSE(f.Exists());
     f.CreateDir();
     EXPECT_TRUE(f.Exists());
+    EXPECT_TRUE(f.IsDirectory());
     bpf::File abs = f.GetAbsolutePath();
     std::cout << *abs.GetPath() << std::endl;
     EXPECT_TRUE(abs.Exists());
+    EXPECT_TRUE(abs.IsDirectory());
     f.Delete();
     EXPECT_FALSE(f.Exists());
 }
