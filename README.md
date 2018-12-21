@@ -9,7 +9,7 @@ Requirements :
   - Visual Studio 2015/2017 for windows builds
   - GCC or Clang for Linux and Mac builds
   - C++11 compliant compiler
-  - Already built Framework Debug and/or Release binarries under <this repository folder>/../FrameworkRemake.
+  - Already built Framework Debug and/or Release binarries under \<this repository folder\>/../FrameworkRemake.
 	The directory name is important due to the hardcoded CMake include in this repository.
 
 ### Windows
@@ -28,12 +28,12 @@ Under bash / other shells
 
 ## Running
 Requirements :
-  - Already built Framework Debug and/or Release binarries under <this repository folder>/../FrameworkRemake.
+  - Already built Framework Debug and/or Release binarries under \<this repository folder\>/../FrameworkRemake.
 	The directory name is important due to the hardcoded CMake include in this repository
   - Copy the dylib/so/dll of the Framework binary inside of ${CMAKE_CURRENT_BINARY_DIR}/<target type either Debug or Release>
 
 ### Windows
-  This is a console based application, consider running it from inside of PowerShell/GitBash or CMD
+  This is a console based application, consider running it from inside of PowerShell, GitBash or CMD
 
 ### Linux / Mac
   This is a console based application, consider running it from inside of your favorite Terminal Emulator
