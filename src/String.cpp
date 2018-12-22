@@ -93,12 +93,23 @@ TEST(String, Basic)
 TEST(String, UTF8CharToUTF32)
 {
     //Source : FileFormat.info
-    EXPECT_TRUE(bpf::String::UTF32("É") == 201);
-    EXPECT_TRUE(bpf::String::UTF32("é") == 233);
-    EXPECT_TRUE(bpf::String::UTF32("€") == 8364);
-    EXPECT_TRUE(bpf::String::UTF32("¥") == 165);
-    EXPECT_TRUE(bpf::String::UTF32("▦") == 9638);
-    EXPECT_TRUE(bpf::String::UTF32("a") == 'a');
+    EXPECT_EQ(bpf::String::UTF32("É"), 201);
+    EXPECT_EQ(bpf::String::UTF32("é"), 233);
+    EXPECT_EQ(bpf::String::UTF32("€"), 8364);
+    EXPECT_EQ(bpf::String::UTF32("¥"), 165);
+    EXPECT_EQ(bpf::String::UTF32("▦"), 9638);
+    EXPECT_EQ(bpf::String::UTF32("a"), 'a');
+}
+
+TEST(String, UTF32CharToUTF8)
+{
+    //Source : FileFormat.info
+    EXPECT_TRUE(bpf::String::UTF8(201) == "É");
+    EXPECT_TRUE(bpf::String::UTF8(233) == "é");
+    EXPECT_TRUE(bpf::String::UTF8(8364) == "€");
+    EXPECT_TRUE(bpf::String::UTF8(165) == "¥");
+    EXPECT_TRUE(bpf::String::UTF8(9638) == "▦");
+    EXPECT_TRUE(bpf::String::UTF8('a') == "a");
 }
 
 TEST(String, ByteAt)
