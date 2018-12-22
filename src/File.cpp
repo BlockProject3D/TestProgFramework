@@ -30,6 +30,7 @@
 #include <iostream>
 #include <gtest/gtest.h>
 #include <Framework/IO/File.hpp>
+#include <Framework/IO/FileStream.hpp>
 
 TEST(File, Basics)
 {
@@ -109,4 +110,18 @@ TEST(File, List_Test4)
     bpf::List<bpf::File> fls = f.ListFiles();
 
     EXPECT_GT(fls.Size(), static_cast<bpf::uint32>(0));
+}
+
+static void SetupTestFile(bpf::File &f)
+{
+    bpf::FileStream stream(f, bpf::FILE_MODE_WRITE | bpf::FILE_MODE_TRUNCATE);
+    EXPECT_EQ(stream.Write("This is a test", 14), 14);
+}
+
+TEST(File, GetSizeBytes)
+{
+    bpf::File f("./test_me.txt");
+    SetupTestFile(f);
+    EXPECT_EQ(f.GetSizeBytes(), 14);
+    f.Delete();
 }
