@@ -35,6 +35,7 @@ set(SOURCES
     src/FileStream.cpp
     src/ByteBuf.cpp
     src/BinaryReadWrite.cpp
+	src/Matrix.cpp
 )
 
 bp_setup()
