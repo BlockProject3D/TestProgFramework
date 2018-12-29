@@ -95,3 +95,31 @@ TEST(ByteBuf, ReadWrite_Test3)
     EXPECT_EQ(buf.Read(res, 9), 9);
     EXPECT_STREQ("ThisThis", res);
 }
+
+TEST(ByteBuf, ReadWrite_Test4)
+{
+    bpf::ByteBuf buf(128);
+    char res[15];
+
+    EXPECT_EQ(buf.Size(), 128);
+    buf.Clear();
+    for (bpf::fsize i = 0; i < buf.Size(); ++i)
+        EXPECT_EQ(buf[i], 0);
+    EXPECT_EQ(buf.Write("This", 4), 4);
+    EXPECT_EQ(buf.GetCursor(), 4);
+    EXPECT_EQ(buf.Write("This", 4), 4);
+    EXPECT_EQ(buf.GetCursor(), 8);
+    buf.Seek(0);
+    EXPECT_EQ(buf.Read(res, 9), 9);
+    EXPECT_STREQ("ThisThis", res);
+    buf.Clear();
+    EXPECT_EQ(buf.GetCursor(), 0);
+    EXPECT_EQ(buf.GetWrittenBytes(), 0);
+    EXPECT_EQ(buf.Size(), 128);
+    EXPECT_EQ(buf.Write(Null, 0), 0);
+    EXPECT_EQ(buf.GetCursor(), 0);
+    EXPECT_EQ(buf.GetWrittenBytes(), 0);
+    EXPECT_EQ(buf.Read(Null, 0), 0);
+    EXPECT_EQ(buf.GetCursor(), 0);
+    EXPECT_EQ(buf.GetWrittenBytes(), 0);
+}

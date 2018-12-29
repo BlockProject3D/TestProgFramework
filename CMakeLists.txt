@@ -34,6 +34,7 @@ set(SOURCES
     src/MemoryMapper.cpp
     src/FileStream.cpp
     src/ByteBuf.cpp
+    src/BinaryReadWrite.cpp
 )
 
 bp_setup()
