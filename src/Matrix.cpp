@@ -243,3 +243,18 @@ TEST(Matrix, Multiply_NonSquare_Test3)
 
     ExpectMatrixEq(res, expected);
 }
+
+TEST(Matrix, Matrix_Inverse)
+{
+    bpf::Matrix<2, 2, float> mat = {
+        0, 6,
+        9, 5
+    };
+    bpf::Matrix<2, 2, float> res = mat * mat.Invert();
+    bpf::Matrix<2, 2, float> expected = {
+        1, 0,
+        0, 1
+    };
+    
+    ExpectMatrixEq(res, expected);
+}
