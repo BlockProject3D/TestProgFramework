@@ -31,6 +31,9 @@
 #include <gtest/gtest.h>
 #include <Framework/Math/BMath.hpp>
 #include <Framework/Math/Matrix.hpp>
+#include <Framework/Math/Matrix2.hpp>
+#include <Framework/Math/Matrix3.hpp>
+#include <Framework/Math/Matrix4.hpp>
 
 template <bpf::fsize X, bpf::fsize Y, typename T>
 static void PrintMatrix(const bpf::Matrix<Y, X, T> &other)
@@ -43,6 +46,24 @@ static void PrintMatrix(const bpf::Matrix<Y, X, T> &other)
     }
 }
 
+template <typename T>
+static void PrintVector(const bpf::Vector2<T> &other)
+{
+    std::cout << "V2(" << other.X << ", " << other.Y << ")" << std::endl;
+}
+
+template <typename T>
+static void PrintVector(const bpf::Vector3<T> &other)
+{
+    std::cout << "V3(" << other.X << ", " << other.Y << ", " << other.Z << ")" << std::endl;
+}
+
+template <typename T>
+static void PrintVector(const bpf::Vector4<T> &other)
+{
+    std::cout << "V4(" << other.X << ", " << other.Y << ", " << other.Z << ", " << other.W <<")" << std::endl;
+}
+
 template <bpf::fsize X, bpf::fsize Y, typename T>
 static void ExpectMatrixEq(const bpf::Matrix<Y, X, T> &mat, const bpf::Matrix<Y, X, T> &mat1)
 {
@@ -51,6 +72,30 @@ static void ExpectMatrixEq(const bpf::Matrix<Y, X, T> &mat, const bpf::Matrix<Y,
         for (bpf::fsize x = 0; x != X; ++x)
             EXPECT_EQ(mat(x, y), mat1(x, y));
     }
+}
+
+template <typename T>
+static void ExpectVectorEq(const bpf::Vector2<T> &v, const bpf::Vector2<T> &v1)
+{
+    EXPECT_EQ(v.X, v1.X);
+    EXPECT_EQ(v.Y, v1.Y);
+}
+
+template <typename T>
+static void ExpectVectorEq(const bpf::Vector3<T> &v, const bpf::Vector3<T> &v1)
+{
+    EXPECT_EQ(v.X, v1.X);
+    EXPECT_EQ(v.Y, v1.Y);
+    EXPECT_EQ(v.Z, v1.Z);
+}
+
+template <typename T>
+static void ExpectVectorEq(const bpf::Vector4<T> &v, const bpf::Vector4<T> &v1)
+{
+    EXPECT_EQ(v.X, v1.X);
+    EXPECT_EQ(v.Y, v1.Y);
+    EXPECT_EQ(v.Z, v1.Z);
+    EXPECT_EQ(v.W, v1.W);
 }
 
 TEST(Matrix, Create_Test1)
@@ -72,18 +117,18 @@ TEST(Matrix, Create_Test1)
 
 TEST(Matrix, Create_Test2)
 {
-    bpf::Matrix<3, 3, int> mat = bpf::Matrix<3, 3, int>::Identity;
-    bpf::Matrix<3, 3, int> mat1 = { 1, 0, 0,
-                                    0, 1, 0,
-                                    0, 0, 1 };
+    bpf::Matrix3<int> mat = bpf::Matrix3<int>::Identity;
+    bpf::Matrix3<int> mat1 = { 1, 0, 0,
+                               0, 1, 0,
+                               0, 0, 1 };
 
     ExpectMatrixEq(mat, mat1);
 }
 
 TEST(Matrix, Transpose_Square)
 {
-    bpf::Matrix<3, 3, int> mat = bpf::Matrix<3, 3, int>::Identity;
-    bpf::Matrix<3, 3, int> mat1 = mat.Transpose();
+    bpf::Matrix3<int> mat = bpf::Matrix3<int>::Identity;
+    bpf::Matrix3<int> mat1 = mat.Transpose();
 
     ExpectMatrixEq(mat, mat1);
 }
@@ -106,8 +151,8 @@ TEST(Matrix, Transpose_NonSquare)
 
 TEST(Matrix, SwapRows_Square)
 {
-    bpf::Matrix<3, 3, int> mat = bpf::Matrix<3, 3, int>::Identity;
-    bpf::Matrix<3, 3, int> mat1 = {
+    bpf::Matrix3<int> mat = bpf::Matrix3<int>::Identity;
+    bpf::Matrix3<int> mat1 = {
         4, 0, 1,
         0, 1, 2,
         1, 0, 3
@@ -152,20 +197,20 @@ TEST(Matrix, SwapRows_NonSquare)
 
 TEST(Matrix, Multiply_Square_Test1)
 {
-    bpf::Matrix<3, 3, int> mat = bpf::Matrix<3, 3, int>::Identity;
-    bpf::Matrix<3, 3, int> mat1 = bpf::Matrix<3, 3, int>::Identity;
+    bpf::Matrix3<int> mat = bpf::Matrix3<int>::Identity;
+    bpf::Matrix3<int> mat1 = bpf::Matrix3<int>::Identity;
 
     ExpectMatrixEq(mat, mat * mat1);
 }
 
 TEST(Matrix, Multiply_Square_Test2)
 {
-    bpf::Matrix<3, 3, int> mat = {
+    bpf::Matrix3<int> mat = {
         2, 5, 6,
         9, 8, 7,
         3, 1, 0
     };
-    bpf::Matrix<3, 3, int> mat1 = bpf::Matrix<3, 3, int>::Identity;
+    bpf::Matrix3<int> mat1 = bpf::Matrix3<int>::Identity;
 
     ExpectMatrixEq(mat, mat * mat1);
 }
@@ -246,15 +291,57 @@ TEST(Matrix, Multiply_NonSquare_Test3)
 
 TEST(Matrix, Matrix_Inverse)
 {
-    bpf::Matrix<2, 2, float> mat = {
+    bpf::Matrix2<float> mat = {
         0, 6,
         9, 5
     };
-    bpf::Matrix<2, 2, float> res = mat * mat.Invert();
-    bpf::Matrix<2, 2, float> expected = {
+    bpf::Matrix2<float> res = mat * mat.Invert();
+    bpf::Matrix2<float> expected = {
         1, 0,
         0, 1
     };
     
     ExpectMatrixEq(res, expected);
+}
+
+TEST(Matrix, Multiply_Vec2)
+{
+    bpf::Matrix2<int> mat = {
+        5, 9,
+        7, 2
+    };
+    bpf::Vector2<int> vec(6, 5);
+    bpf::Vector2<int> res = mat * vec;
+    bpf::Vector2<int> expected(75, 52);
+
+    ExpectVectorEq(res, expected);
+}
+
+TEST(Matrix, Multiply_Vec3)
+{
+    bpf::Matrix3<int> mat = {
+        5, 9, 8,
+        7, 2, 6,
+        3, 4, 1
+    };
+    bpf::Vector3<int> vec(6, 5, 3);
+    bpf::Vector3<int> res = mat * vec;
+    bpf::Vector3<int> expected(99, 70, 41);
+
+    ExpectVectorEq(res, expected);
+}
+
+TEST(Matrix, Multiply_Vec4)
+{
+    bpf::Matrix4<int> mat = {
+        5, 9, 8, 5,
+        7, 2, 6, 7,
+        3, 4, 1, 6,
+        4, 5, 8, 1
+    };
+    bpf::Vector4<int> vec(6, 5, 3, 2);
+    bpf::Vector4<int> res = mat * vec;
+    bpf::Vector4<int> expected(109, 84, 53, 75);
+
+    ExpectVectorEq(res, expected);
 }
