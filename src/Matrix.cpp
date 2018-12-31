@@ -31,9 +31,6 @@
 #include <gtest/gtest.h>
 #include <Framework/Math/BMath.hpp>
 #include <Framework/Math/Matrix.hpp>
-#include <Framework/Math/Matrix2.hpp>
-#include <Framework/Math/Matrix3.hpp>
-#include <Framework/Math/Matrix4.hpp>
 
 template <bpf::fsize X, bpf::fsize Y, typename T>
 static void PrintMatrix(const bpf::Matrix<Y, X, T> &other)
@@ -291,12 +288,12 @@ TEST(Matrix, Multiply_NonSquare_Test3)
 
 TEST(Matrix, Matrix_Inverse)
 {
-    bpf::Matrix2<float> mat = {
+    bpf::Matrix2f mat = {
         0, 6,
         9, 5
     };
-    bpf::Matrix2<float> res = mat * mat.Invert();
-    bpf::Matrix2<float> expected = {
+    bpf::Matrix2f res = mat * mat.Invert();
+    bpf::Matrix2f expected = {
         1, 0,
         0, 1
     };
@@ -344,4 +341,31 @@ TEST(Matrix, Multiply_Vec4)
     bpf::Vector4<int> expected(109, 84, 53, 75);
 
     ExpectVectorEq(res, expected);
+}
+
+TEST(Matrix, HomogeneousCoords_2D)
+{
+    bpf::Matrix3f mat = bpf::Matrix3f::Identity;
+    bpf::Matrix3f expected = {
+        1, 0, 2,
+        0, 1, 2,
+        0, 0, 1
+    };
+
+    mat.Translate(bpf::Vector2<float>(2, 2));
+    ExpectMatrixEq(mat, expected);
+}
+
+TEST(Matrix, HomogeneousCoords_3D)
+{
+    bpf::Matrix4f mat = bpf::Matrix4f::Identity;
+    bpf::Matrix4f expected = {
+        1, 0, 0, 2,
+        0, 1, 0, 2,
+        0, 0, 1, 2,
+        0, 0, 0, 1
+    };
+
+    mat.Translate(bpf::Vector3<float>(2, 2, 2));
+    ExpectMatrixEq(mat, expected);
 }
