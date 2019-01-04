@@ -49,11 +49,10 @@ TEST(Quat, Construct)
 TEST(Quat, EulerAngles)
 {
     bpf::Quatld q = bpf::Quatld(bpf::Vector3ld(bpf::Math::Pi / 2.0, bpf::Math::Pi / 2.0, bpf::Math::Pi / 4.0));
-    bpf::Quatld expected = bpf::Quatld(0.2705981, 0.6532815, 0.2705981, 0.6532815);
-    bpf::Vector3ld euler = expected.ToEulerAngles();
+    bpf::Quatld expected = bpf::Quatld(0.6532815, 0.2705981, 0.6532815, -0.2705981);
 
-    std::cout << q.GetW() << ", " << q.GetAxis().X << ", " << q.GetAxis().Y << ", " << q.GetAxis().Z << std::endl;
-    std::cout << euler.X * bpf::Math::RadToDeg << ", " << euler.Y * bpf::Math::RadToDeg << ", " << euler.Z * bpf::Math::RadToDeg << std::endl;
+    /*std::cout << q.GetW() << ", " << q.GetAxis().X << ", " << q.GetAxis().Y << ", " << q.GetAxis().Z << std::endl;
+    std::cout << euler.X * bpf::Math::RadToDeg << ", " << euler.Y * bpf::Math::RadToDeg << ", " << euler.Z * bpf::Math::RadToDeg << std::endl;*/
     EXPECT_EQ(q, expected);
 }
 
