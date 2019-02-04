@@ -53,7 +53,7 @@ TEST(File, Abs)
     EXPECT_TRUE(f.Exists());
     EXPECT_TRUE(f.IsDirectory());
     bpf::File abs = f.GetAbsolutePath();
-    std::cout << *abs.GetPath() << std::endl;
+    std::cout << *abs.Path() << std::endl;
     EXPECT_TRUE(abs.Exists());
     EXPECT_TRUE(abs.IsDirectory());
     f.Delete();
@@ -74,9 +74,9 @@ TEST(File, AutoSlash)
 {
     bpf::File f("./");
 
-    EXPECT_STREQ(*f.GetPath(), ".");
+    EXPECT_STREQ(*f.Path(), ".");
     bpf::File f1 = f + "../";
-    EXPECT_STREQ(*f1.GetPath(), "./..");
+    EXPECT_STREQ(*f1.Path(), "./..");
 }
 #endif
 
